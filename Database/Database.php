@@ -1,5 +1,5 @@
 <?php
-// функциональный класс для работы с базой данных
+// класс для работы с базой данных
 class Database
 {
     private static $instance = null; //  доступно в контексте класс
@@ -82,31 +82,76 @@ class Database
         return $this;
     }
 
-    public function delete($table, $where = []) 
+    public function delete($table, $where = [])
     {
         $this->action('DELETE', $table, $where);
         return $this;
     }
 
-    public function action($action, $table, $where = []) 
+    public function action($action, $table, $where = [])
     {
         // выполним проверку массива
         if (count($where) === 3) {
 
-            $operators = ['=','>','<','<=','>='];
+            $operators = ['=', '>', '<', '<=', '>='];
 
             $field = $where[0];
             $operator = $where[1];
             $value = $where[2];
 
-            if(in_array($operator, $operators)) {
+            if (in_array($operator, $operators)) {
                 $sql = "$action FROM `$table` WHERE $field $operator ?";
                 $this->query($sql, [$value]);
                 return $this;
             }
-
         } else {
             return false;
         }
+    }
+
+    // суть метода - Подготовить запрос для отправки
+    public function insert($table, $fields = [])
+    {
+        $values = ''; // изначально пустая
+        foreach ($fields as $field) {
+            // в зависимости сколько записей в массиве, столько раз будет добавлен знак-? в переменную
+            $values .= "?,";
+        }
+
+        // обрезаем крайнюю запятую в строке $values
+        $values = rtrim($values, ',');
+
+
+        //var_dump('`'. implode('`, `',array_keys($fields)).'`'); exit;
+        $sql =  "INSERT INTO $table (" . '`' . implode('`, `', array_keys($fields)) . '`' . ") VALUES ($values)";
+
+        // вызываем уже написанный метод, который будет отправлять запрс, и передаём ему подготовленный запрос
+        if (!$this->query($sql, $fields)) {
+            return true; // если всё сработает, вернёт true
+        }
+        // иначе вернёт false
+        return false;
+    }
+
+    public function update($table, $id, $fields = [])
+    {
+        $set = '';
+        // перебираем массив, в котором ключи - это поля, значения - это новое значение ячеек
+        foreach ($fields as $key => $field) {
+            // в $set будет добавляться новое значение при каждой итерации
+            $set .= "{$key} = ?,"; //
+        }
+
+        // удаление запятой с правого края
+        $set = rtrim($set, ',');
+
+        $sql = "UPDATE $table SET $set WHERE id = $id";
+
+        // вызываем уже написанный метод, который будет отправлять запрс, и передаём ему подготовленный запрос
+        if (!$this->query($sql, $fields)) {
+            return true; // если всё сработает, вернёт true
+        }
+        // иначе вернёт false
+        return false;
     }
 }
