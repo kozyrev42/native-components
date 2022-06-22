@@ -9,8 +9,8 @@ class Database
     {
         try {
             // область перехвата исключения 
-            $this->pdo = new PDO("mysql:host=127.0.0.1;dbname=my_php;charset=utf8", "root", "");
-            echo "-подключение к базе успешно-";
+            $this->pdo = new PDO("mysql:host=".Config::get('mysql.host').";dbname=".Config::get('mysql.database').";charset=utf8", Config::get('mysql.username'), Config::get('mysql.password'));
+            echo "--подключение к базе успешно--"."<br>";
         } catch (PDOException $exception) { // PDOException - представляет ошибку, вызванную PDO, если она возникает
             // завершение скрипта с выводом ошибки
             die($exception->getMessage());

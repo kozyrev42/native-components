@@ -1,6 +1,10 @@
 <?php
-require_once('Database.php');
 require_once('Config.php');
+require_once('Database.php');
+require_once('Input.php');
+require_once('Validate.php');
+
+
 
 /*  -----------  Database  ------------ */
 
@@ -48,7 +52,7 @@ $GLOBALS['config'] = [
         'host' => 'localhost',
         'username' => 'root',
         'password' => '',
-        'database' => '',
+        'database' => 'my_php',
         'something' => [
             'no' => 'yes'
         ]
@@ -72,26 +76,28 @@ $GLOBALS['config'] = [
 if(Input::exists()){
     // создание нового Объекта, которым будем пользоваться
     $validate = new Validate();
-
-    // методу Объекта передаём данные на обработку: массив $_POST(что будем проверять), массив с правилами на проверку (на что будем проверять)
+    
+    // методу Объекта передаём данные на обработку: массив $_POST(что будем проверять), массив с критериями(граничиными условиями) на проверку (на что будем проверять)
     $validation = $validate->check($_POST, [
+        // ключи элементов также соответствуют ключам из массива $_POST
         'username' => [ // массив содержит правила для проверки
-            'required' => true,
+            'required' => true,     // поле обязательно для заполнения
             'min' => 2,
             'max' => 15,
             'unique' => 'users' // username должен быть уникальным в таблице 'users'
         ],
         'password' => [
-            'required' => true,
+            'required' => true, // поле обязательно для заполнения
             'min' => 3
         ],
         'password_again' => [
-            'required' => true,     // повторить пароль обязательно
+            'required' => true,     // поле обязательно для заполнения
             'matches' => 'password' // должен совпадать со значение поля 'password'
         ],
     ]);
 
     if ($validation->passed()) {
+        // если метод вернёт "true", значит валидация пройдена
         echo "валидация пройдена";
     } else {
         // иначе возвращаем ошибки
