@@ -4,9 +4,12 @@ class Validate {
     private $passed = false, $erorrs = [], $db = null;
 
     public function __construct() {
+        // вызов метода, который вернёт подключение к базе PDO
+        // и всё это происходит при создании экземпляра Validate
         $this->db = Database::getInstance();
     }
 
+    // 
     public function check($source, $items = []) {
         foreach($items as $item => $rules) {
             foreach($rules as $rule => $rule_value) {

@@ -1,13 +1,13 @@
 <?php
 
 class Input {
-// компонент проверяет на пустоту массивы $_POST и $_GET
-// компонент может возврать значения из массивов $_POST и $_GET
+// компонент проверяет на пустоту массивы $_POST и $_GET, возвращает булевое
+// компонент может возвращать значения из массивов $_POST и $_GET
 
-    public static function exists($type = 'post') {
+    public static function exists($type = 'post') { // если 
         switch ($type) {
 
-            case 'post':
+            case 'post': // кейс выполняется если в переменной $type содержится 'post'
                 // проверка на пустоту массива $_POST
                 // если массив содержит, функция возвращает true, иначе false
                 return (!empty($_POST)) ? true : false;

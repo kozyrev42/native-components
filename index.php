@@ -108,11 +108,12 @@ if(Input::exists()){
     <div class="field">
         <label for="">Username</label>
         <input type="text" name="username" value="<?php echo Input::get('username') ?>">
+        <!-- метод возратит введеное ранее username, или пустую строку -->
     </div>
 
     <div class="field">
         <label for="">Password</label>
-        <input type="text" name="password" >
+        <input type="text" name="password">
     </div>
 
     <div class="field">
