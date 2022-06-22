@@ -3,7 +3,8 @@ require_once('Config.php');
 require_once('Database.php');
 require_once('Input.php');
 require_once('Validate.php');
-
+require_once('Session.php');
+require_once('Token.php');
 
 
 /*  -----------  Database  ------------ */
@@ -56,6 +57,9 @@ $GLOBALS['config'] = [
         'something' => [
             'no' => 'yes'
         ]
+    ],
+    'session' => [
+        'token_name' => 'token'
     ]
 ];
 
@@ -73,37 +77,40 @@ $GLOBALS['config'] = [
 
 // в условии проверяем, была-ли отправлена форма
 // если проверка пройдена, начинаем функционал валидации
-if(Input::exists()){
-    // создание нового Объекта, которым будем пользоваться
-    $validate = new Validate();
-    
-    // методу Объекта передаём данные на обработку: массив $_POST(что будем проверять), массив с критериями(граничиными условиями) на проверку (на что будем проверять)
-    $validation = $validate->check($_POST, [
-        // ключи элементов также соответствуют ключам из массива $_POST
-        'username' => [ // массив содержит правила для проверки
-            'required' => true,     // поле обязательно для заполнения
-            'min' => 2,
-            'max' => 15,
-            'unique' => 'users' // username должен быть уникальным в таблице 'users'
-        ],
-        'password' => [
-            'required' => true, // поле обязательно для заполнения
-            'min' => 3
-        ],
-        'password_again' => [
-            'required' => true,     // поле обязательно для заполнения
-            'matches' => 'password' // должен совпадать со значение поля 'password'
-        ],
-    ]);
+if (Input::exists()) { 
+    // проверяем, токен юзера который мы ему передали в скрытый инпут
+    if(Token::check(Input::get('token'))) { 
+        // создание нового Объекта, которым будем пользоваться
+        $validate = new Validate();
 
-    if ($validation->passed()) {
-        // если метод вернёт "true", значит валидация пройдена
-        echo "валидация пройдена";
-    } else {
-        // иначе возвращаем ошибки
-        // переборка массива с ошибками
-        foreach($validation->errors() as $error){
-            echo $error . "<br>";
+        // методу Объекта передаём данные на обработку: массив $_POST(что будем проверять), массив с критериями(граничиными условиями) на проверку (на что будем проверять)
+        $validation = $validate->check($_POST, [
+            // ключи элементов также соответствуют ключам из массива $_POST
+            'username' => [ // массив содержит правила для проверки
+                'required' => true,     // поле обязательно для заполнения
+                'min' => 2,
+                'max' => 15,
+                'unique' => 'users' // username должен быть уникальным в таблице 'users'
+            ],
+            'password' => [
+                'required' => true, // поле обязательно для заполнения
+                'min' => 3
+            ],
+            'password_again' => [
+                'required' => true,     // поле обязательно для заполнения
+                'matches' => 'password' // должен совпадать со значение поля 'password'
+            ],
+        ]);
+
+        if ($validation->passed()) {
+            // если метод вернёт "true", значит валидация пройдена
+            echo "валидация пройдена";
+        } else {
+            // иначе возвращаем ошибки
+            // переборка массива с ошибками
+            foreach ($validation->errors() as $error) {
+                echo $error . "<br>";
+            }
         }
     }
 }
@@ -126,6 +133,9 @@ if(Input::exists()){
         <label for="">Password again</label>
         <input type="text" name="password_again">
     </div>
+
+    <!-- отправляем пользователю форму со сгенерированным уникальным токеном -->
+    <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
 
     <div class="field">
         <button type="submit">Submit</button>
