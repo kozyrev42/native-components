@@ -5,6 +5,7 @@ require_once('Input.php');
 require_once('Validate.php');
 require_once('Session.php');
 require_once('Token.php');
+require_once('User.php');
 
 
 /*  -----------  Database  ------------ */
@@ -89,7 +90,7 @@ if (Input::exists()) {
                 'required' => true,     // поле обязательно для заполнения
                 'min' => 2,
                 'max' => 15,
-                'unique' => 'users' // username должен быть уникальным в таблице 'users'
+                'unique' => 'level-two-users' // username должен быть уникальным в таблице 'level-two-users'
             ],
             'password' => [
                 'required' => true, // поле обязательно для заполнения
@@ -103,9 +104,18 @@ if (Input::exists()) {
 
         if ($validation->passed()) {
             // если метод вернёт "true", значит валидация пройдена
+
+            // создавая new User, автоматический создаётся подключение к базе
+            $user = new User;
+            $user->create([
+                // в массив помещаем данные из формы
+                'username'=> Input::get('username'),
+                'password'=> Input::get('password')
+            ]);
+
             // методу передаём ключ-вид-сообщения, и само сообщение
             Session::flash('success','успех');
-            header('Location: test.php');
+            //header('Location: test.php');
         } else {
             // иначе возвращаем ошибки
             // переборка массива с ошибками

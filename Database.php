@@ -30,36 +30,8 @@ class Database
         // возращаем объект PDO, созданный к конструкторе
         return self::$instance;
     }
-
-    public function query($sql, $params = [])
-    {
-        //var_dump($params); die;
-        $this->error = false;   // для сброса флага
-        $this->query = $this->pdo->prepare($sql);
-
-        // $params - параметры для запроса
-        if (count($params)) {
-            $i = 1;
-            foreach ($params as $param) {
-                // привязываем каждый прилетевший параметр к параметру функции, начиная с 1
-                $this->query->bindValue($i, $param);
-                $i++;
-            }
-        }
-
-        // выполняем запрос и сразу проверяем выполнен ли он
-        if (!$this->query->execute()) {
-            $this->error = true;    // флаг на ошибку
-        } else {
-            // результат придёт в виде объекта, который сохраняем в свойство
-            $this->result = $this->query->fetchAll(PDO::FETCH_OBJ);
-            // метод считает количество вернувшихся записей
-            $this->count = $this->query->rowCount();
-        }
-
-        // возращаем Объект, содержащий результаты запроса
-        return $this;
-    }
+    
+    
 
     public function error()
     {
@@ -116,22 +88,51 @@ class Database
         $values = ''; // изначально пустая
         foreach ($fields as $field) {
             // в зависимости сколько записей в массиве, столько раз будет добавлен знак-? в переменную
+            // $field - не используется, так как цикл используем для выявления количества строк 
             $values .= "?,";
         }
 
         // обрезаем крайнюю запятую в строке $values
         $values = rtrim($values, ',');
 
-
-        //var_dump('`'. implode('`, `',array_keys($fields)).'`'); exit;
-        $sql =  "INSERT INTO $table (" . '`' . implode('`, `', array_keys($fields)) . '`' . ") VALUES ($values)";
-
+        $sql = "INSERT INTO `$table` (" . '`' . implode('`, `', array_keys($fields)) . '`' . ") VALUES ($values)";
+        //var_dump($sql);exit;
         // вызываем уже написанный метод, который будет отправлять запрс, и передаём ему подготовленный запрос
         if (!$this->query($sql, $fields)) {
-            return true; // если всё сработает, вернёт true
+            return true; 
         }
-        // иначе вернёт false
-        return false;
+         return false;
+    }
+
+    public function query($sql, $params = [])
+    {
+        //var_dump($sql);exit;
+        $this->error = false;   // для сброса флага
+        $this->query = $this->pdo->prepare($sql);
+
+        // $params - параметры для запроса
+        if (count($params)) {
+            $i = 1;
+            foreach ($params as $param) {
+                // привязываем каждый прилетевший параметр к параметру функции, начиная с 1
+                $this->query->bindValue($i, $param);
+                $i++;
+            }
+        }
+
+        // выполняем запрос и сразу проверяем выполнен ли он
+        if (!$this->query->execute()) {
+            $this->error = true;    // флаг на ошибку
+            //var_dump(true);exit;
+        } else {
+            // результат придёт в виде объекта, который сохраняем в свойство
+            $this->result = $this->query->fetchAll(PDO::FETCH_OBJ);
+            // метод считает количество вернувшихся записей
+            $this->count = $this->query->rowCount();
+        }
+        
+        // возращаем Объект, содержащий результаты запроса
+        return $this;
     }
 
     public function update($table, $id, $fields = [])

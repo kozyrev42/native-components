@@ -7,10 +7,11 @@ class User
     // автоматически создаём Объект подключения к базе PDO
     public function __construct() {
         $this->db = Database::getInstance();
+        
     }
 
     // пользуемся методом объекта, для записи в таблицу
     public function create($fields = []) {
-        $this->db->insert('users', $fields);
+        $this->db->insert('level-two-users', $fields);
     }
 }
