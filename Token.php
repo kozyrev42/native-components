@@ -5,7 +5,7 @@ class Token {
     // создание и запись в переменную сессии, нового сгенерироного значения
     public static function generate() {
         // Config::get('session.token_name') - берём имя из конфигаруционного массива => 'token'
-        // генерируем значение
+        // генерируем уникальное значение токена
         return Session::put(Config::get('session.token_name'), md5(uniqid()));
     }
 

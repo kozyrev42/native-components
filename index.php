@@ -70,7 +70,6 @@ $GLOBALS['config'] = [
 //var_dump(Config::get('mysql.something.no'));
 //echo Config::get('mysql.host');
 ?>
-
 <?php
 /* ---------- Validation ---- Input ----------- */
 // используем два компонента
@@ -104,7 +103,9 @@ if (Input::exists()) {
 
         if ($validation->passed()) {
             // если метод вернёт "true", значит валидация пройдена
-            echo "валидация пройдена";
+            // методу передаём ключ-вид-сообщения, и само сообщение
+            Session::flash('success','успех');
+            header('Location: test.php');
         } else {
             // иначе возвращаем ошибки
             // переборка массива с ошибками
