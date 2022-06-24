@@ -52,8 +52,9 @@ class Validate {
                         break;
 
                         case 'email':
+                            // проверка на формат электронного письма
                             if(!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                                $this->addError("{$item} это не электронное письмо");
+                                $this->addError("{$item} формат не электронного письма");
                             }
                         break;
                     }

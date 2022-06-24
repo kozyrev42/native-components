@@ -9,7 +9,7 @@ class Database
     {
         try {
             // область перехвата исключения 
-            $this->pdo = new PDO("mysql:host=".Config::get('mysql.host').";dbname=".Config::get('mysql.database').";charset=utf8", Config::get('mysql.username'), Config::get('mysql.password'));
+            $this->pdo = new PDO("mysql:host=" . Config::get('mysql.host') . ";dbname=" . Config::get('mysql.database') . ";charset=utf8", Config::get('mysql.username'), Config::get('mysql.password'));
             //echo "--подключение к базе успешно--"."<br>";
         } catch (PDOException $exception) { // PDOException - представляет ошибку, вызванную PDO, если она возникает
             // завершение скрипта с выводом ошибки
@@ -30,8 +30,8 @@ class Database
         // возращаем объект PDO, созданный к конструкторе
         return self::$instance;
     }
-    
-    
+
+
 
     public function error()
     {
@@ -99,9 +99,9 @@ class Database
         //var_dump($sql);exit;
         // вызываем уже написанный метод, который будет отправлять запрс, и передаём ему подготовленный запрос
         if (!$this->query($sql, $fields)) {
-            return true; 
+            return true;
         }
-         return false;
+        return false;
     }
 
     public function query($sql, $params = [])
@@ -130,12 +130,16 @@ class Database
             // метод считает количество вернувшихся записей
             $this->count = $this->query->rowCount();
         }
-        
+
         // возращаем Объект, содержащий результаты запроса
         return $this;
     }
 
     public function update($table, $id, $fields = [])
+    /* $users = Database::getInstance()->update('email_list', $id, [
+    'last_name' => ' 444 еще ф',
+    'email' => '444 еще е'
+    ]); */
     {
         $set = '';
         // перебираем массив, в котором ключи - это поля, значения - это новое значение ячеек
