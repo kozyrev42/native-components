@@ -6,6 +6,7 @@ require_once('Validate.php');
 require_once('Session.php');
 require_once('Token.php');
 require_once('User.php');
+require_once('Redirect.php');
 
 
 /*  -----------  Database  ------------ */
@@ -65,7 +66,7 @@ $GLOBALS['config'] = [
 ];
 
 
-// пользоваться буду так:
+// ипользоваться Config::get('mysql.host');
 // в функцию объекта передаю ('имяМассива.ключКзначению')
 //echo Config::get('mysql.host');
 //var_dump(Config::get('mysql.something.no'));
@@ -107,15 +108,18 @@ if (Input::exists()) {
 
             // создавая new User, автоматический создаётся подключение к базе
             $user = new User;
+            // запись в базу введённых в форме данных
             $user->create([
-                // в массив помещаем данные из формы
+                // в массив помещаем поля для заполнения и данные из формы
                 'username'=> Input::get('username'),
-                'password'=> Input::get('password')
+                'password'=> password_hash(Input::get('password'),PASSWORD_DEFAULT)
             ]);
-
+            
             // методу передаём ключ-вид-сообщения, и само сообщение
             Session::flash('success','успех');
-            //header('Location: test.php');
+            
+            //Redirect::to('test.php');
+            Redirect::to('404');
         } else {
             // иначе возвращаем ошибки
             // переборка массива с ошибками

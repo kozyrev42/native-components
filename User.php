@@ -12,6 +12,7 @@ class User
 
     // пользуемся методом объекта, для записи в таблицу
     public function create($fields = []) {
+        // вызов метода для записи в базу
         $this->db->insert('level-two-users', $fields);
     }
 }
