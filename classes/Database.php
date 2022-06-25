@@ -3,7 +3,7 @@
 class Database
 {
     private static $instance = null; //  доступно в контексте класс
-    private $pdo, $query, $error = false, $result, $count;
+    private $pdo, $query, $error = false, $results, $count;
 
     private function __construct()
     {
@@ -38,9 +38,9 @@ class Database
         return $this->error;
     }
 
-    public function result()
+    public function results()
     {
-        return $this->result;
+        return $this->results;
     }
 
     public function count()
@@ -126,7 +126,7 @@ class Database
             //var_dump(true);exit;
         } else {
             // результат придёт в виде объекта, который сохраняем в свойство
-            $this->result = $this->query->fetchAll(PDO::FETCH_OBJ);
+            $this->results = $this->query->fetchAll(PDO::FETCH_OBJ);
             // метод считает количество вернувшихся записей
             $this->count = $this->query->rowCount();
         }
@@ -159,5 +159,10 @@ class Database
         }
         // иначе вернёт false
         return false;
+    }
+
+    public function first()
+    {
+        return $this->results()[0];
     }
 }
