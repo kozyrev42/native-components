@@ -24,8 +24,13 @@ if (Input::exists()) {
         if ($validation->passed()) {
             // если валидация пройдена, будем логинится
             $user = new User;
+
+            // проверим активирован ли чекбокс "запомнить меня"
+            $remember = (Input::get('remember')) === 'on' ? true : false;
+
+            // метод логирования, принимает 3 параметра, третий параметр - "запомнить меня"
             // результат логирования, сохраняем в переменную, булевое
-            $login = $user->login(Input::get('email'), Input::get('password'));
+            $login = $user->login(Input::get('email'), Input::get('password'), $remember);
 
             if($login) {
                 // логирование успешно
@@ -55,13 +60,14 @@ if (Input::exists()) {
         <input type="text" name="password">
     </div>
 
-    <!-- <div class="field">
+    <div class="field">
         <input type="checkbox" name="remember" id="remember">
-        <label for="remember">Remember me</label>
-    </div> -->
+        <label for="remember">Запомнить меня</label>
+        <!-- при активации, в $_POST, под ключов remember сохранится значение "on" -->
+    </div>
 
     <input type="hidden" name="token" value="<?php echo Token::generate(); ?>">
     <div class="field">
-        <button type="submit">Submit</button>
+        <button type="submit">Войти</button>
     </div>
 </form>

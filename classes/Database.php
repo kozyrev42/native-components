@@ -151,7 +151,7 @@ class Database
         // удаление запятой с правого края
         $set = rtrim($set, ',');
 
-        $sql = "UPDATE $table SET $set WHERE id = $id";
+        $sql = "UPDATE `$table` SET $set WHERE id = $id";
 
         // вызываем уже написанный метод, который будет отправлять запрс, и передаём ему подготовленный запрос
         if (!$this->query($sql, $fields)) {
